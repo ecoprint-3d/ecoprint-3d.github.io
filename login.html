@@ -1,0 +1,157 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - Эко Принт</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/login.css">
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <div id="header"></div>
+
+    <!-- Страница входа -->
+    <section class="login-page">
+        <div class="login-container">
+            <div class="login-header">
+                <h1>Вход в систему</h1>
+                <p>Введите свои учетные данные для доступа к системе</p>
+            </div>
+            
+            <form id="loginForm">
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="Ваш email" required value="ivanov@edu.ru">
+                </div>
+                
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" class="form-control" placeholder="Ваш пароль" required value="123">
+                </div>
+                
+                <button type="submit" class="btn-login-form">Войти</button>
+                
+                <div id="errorMessage" class="error-message">
+                    Неверный email или пароль
+                </div>
+            </form>
+            
+            <div class="login-links">
+                <p>Нет аккаунта? <a href="register.html">Зарегистрироваться</a></p>
+            </div>
+
+            <!-- Тестовые аккаунты -->
+            <div class="test-accounts">
+                <h3>Тестовые аккаунты:</h3>
+                <div class="test-account">
+                    <strong>Оператор:</strong> operator@ecoprint.ru / operator123
+                </div>
+                <div class="test-account">
+                    <strong>Студент:</strong> ivanov@edu.ru / 123
+                </div>
+                <div class="test-account">
+                    <button onclick="showDebugInfo()" style="background: #666; color: white; border: none; padding: 5px 10px; border-radius: 3px; cursor: pointer;">
+                        Показать информацию о системе
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <div id="footer"></div>
+    
+    <script src="js/data.js"></script>
+    <script>
+        // Обработка формы входа
+        document.addEventListener('DOMContentLoaded', async function() {
+            console.log('Страница входа загружена');
+            
+            // Проверяем, если пользователь уже вошел
+            const currentUser = API.getCurrentUser();
+            if (currentUser) {
+                console.log('Пользователь уже вошел:', currentUser.name);
+                redirectByRole(currentUser.role);
+            }
+
+            const form = document.getElementById('loginForm');
+            const errorMessage = document.getElementById('errorMessage');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                
+                console.log('Попытка входа с email:', email);
+                
+                // Показываем загрузку
+                const submitBtn = form.querySelector('.btn-login-form');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Вход...';
+                submitBtn.disabled = true;
+                errorMessage.style.display = 'none';
+                
+                try {
+                    const user = await API.login(email, password);
+                    
+                    if (user) {
+                        console.log('Успешный вход, пользователь:', user);
+                        errorMessage.style.display = 'none';
+                        redirectByRole(user.role);
+                    } else {
+                        errorMessage.textContent = 'Неверный email или пароль';
+                        errorMessage.style.display = 'block';
+                        console.log('Ошибка входа');
+                    }
+                } catch (error) {
+                    console.error('Ошибка при входе:', error);
+                    errorMessage.textContent = 'Ошибка соединения с сервером';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+
+            function redirectByRole(role) {
+                console.log('Перенаправление для роли:', role);
+                if (role === 'operator') {
+                    window.location.href = 'operator.html';
+                } else {
+                    window.location.href = 'index.html';
+                }
+            }
+        });
+
+        // Функция для отладки
+        async function showDebugInfo() {
+            try {
+                const users = await API.getUsers();
+                const currentUser = API.getCurrentUser();
+                
+                let message = `Пользователей в системе: ${users.length}\n\n`;
+                users.forEach(user => {
+                    message += `👤 ${user.name} (${user.email})\n`;
+                    message += `   Роль: ${user.role}\n`;
+                    message += `   Баланс: ${user.bonusBalance} баллов\n`;
+                    message += `   ID: ${user.id}\n\n`;
+                });
+                
+                if (currentUser) {
+                    message += `Текущий пользователь: ${currentUser.name} (${currentUser.role})`;
+                } else {
+                    message += 'Текущий пользователь: не авторизован';
+                }
+                
+                alert(message);
+            } catch (error) {
+                console.error('Ошибка при получении информации:', error);
+                alert('Ошибка при получении информации о системе');
+            }
+        }
+    </script>
+</body>
+</html>
