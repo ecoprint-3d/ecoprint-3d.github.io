@@ -1,0 +1,26 @@
+[
+  {
+    "id": 1,
+    "orderNumber": "ECO-20240001",
+    "userId": 1,
+    "userName": "Иванов Иван",
+    "phone": "+7 (912) 345-67-89",
+    "email": "student1@edu.ru",
+    "pickupPoint": "main",
+    "paymentMethod": "bonus",
+    "bonusUsed": 150,
+    "subtotal": 300,
+    "finalPrice": 150,
+    "status": "completed",
+    "createdAt": "15.04.2024, 14:30",
+    "items": [
+      {
+        "id": 1,
+        "name": "Эко-ручка",
+        "price": 150,
+        "quantity": 2,
+        "icon": "✏️"
+      }
+    ]
+  }
+]

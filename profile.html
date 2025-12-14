@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - Эко Принт</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/profile.css">
+    <link rel="stylesheet" href="css/profile-orders.css">
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E66PPP1FTP"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E66PPP1FTP');
+</script>
+<body>
+    <!-- Шапка сайта -->
+    <div id="header"></div>
+    
+    <!-- Страница личного кабинета -->
+    <section class="profile-page">
+        <div class="profile-container">
+            <div class="profile-header">
+                <div class="profile-avatar">👤</div>
+                <h1 id="userName">Личный кабинет</h1>
+                <p id="userEmail">Загрузка данных...</p>
+            </div>
+
+            <div class="profile-info">
+                <!-- Бонусный баланс -->
+                <div class="bonus-balance">
+                    <div class="bonus-label">Ваш бонусный баланс</div>
+                    <div class="bonus-amount" id="bonusBalance">0</div>
+                    <div class="bonus-label">баллов</div>
+                </div>
+
+                <!-- Основная информация -->
+                <div class="info-grid">
+                    <div class="info-card">
+                        <h3>Личная информация</h3>
+                        <div class="info-item">
+                            <span class="info-label">ФИО:</span>
+                            <span class="info-value" id="userFullName">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Email:</span>
+                            <span class="info-value" id="userEmailInfo">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Роль:</span>
+                            <span class="info-value" id="userRole">-</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Дата регистрации:</span>
+                            <span class="info-value" id="registrationDate">-</span>
+                        </div>
+                    </div>
+
+                    <div class="info-card">
+                        <h3>Статистика</h3>
+                        <div class="info-item">
+                            <span class="info-label">Всего сдано пластика:</span>
+                            <span class="info-value" id="totalPlastic">0 кг</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Всего операций:</span>
+                            <span class="info-value" id="totalOperations">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Заказов выполнено:</span>
+                            <span class="info-value" id="completedOrders">0</span>
+                        </div>
+                        <div class="info-item">
+                            <span class="info-label">Экологический вклад:</span>
+                            <span class="info-value" id="ecoImpact">0 кг CO₂</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Последние операции -->
+                <h2 class="section-title">Последние операции</h2>
+                <div class="operations-list" id="operationsList">
+                    <!-- Операции будут загружены через JavaScript -->
+                </div>
+
+                <h2 class="section-title">Мои заказы</h2>
+                <div class="orders-list" id="ordersList">
+                    <!-- Заказы будут загружены через JavaScript -->
+                </div>
+
+                <!-- Действия -->
+                <div class="profile-actions">
+                    <a href="catalog.html" class="action-btn">🛍️ Перейти в каталог</a>
+                    <a href="recycle.html" class="action-btn">♻️ Сдать пластик</a>
+                    <button class="action-btn secondary" onclick="logout()">🚪 Выйти</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <div id="footer"></div>
+    <script src="js/common.js"></script>
+
+    <script src="js/utils.js"></script>
+    <script src="js/data.js"></script>
+    <script>
+        // Функция для загрузки данных пользователя
+        async function loadProfileData() {
+            const currentUser = API.getCurrentUser();
+            
+            // Проверяем авторизацию
+            if (!currentUser) {
+                alert('Для доступа к личному кабинету необходимо войти в систему');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            try {
+                // Получаем всех пользователей чтобы найти полные данные
+                const allUsers = await API.getUsers();
+                const userData = allUsers.find(u => u.id === currentUser.id) || currentUser;
+                
+                // Получаем операции пользователя
+                const allDeposits = await API.getDeposits();
+                const userDeposits = allDeposits.filter(d => d.userId === currentUser.id);
+                
+                // Обновляем информацию в шапке
+                document.getElementById('userName').textContent = userData.name || 'Пользователь';
+                document.getElementById('userEmail').textContent = userData.email;
+                
+                // Обновляем основную информацию
+                document.getElementById('userFullName').textContent = userData.name || 'Не указано';
+                document.getElementById('userEmailInfo').textContent = userData.email;
+                document.getElementById('userRole').textContent = userData.role === 'operator' ? 'Оператор' : 'Участник';
+                document.getElementById('registrationDate').textContent = userData.registrationDate || 'Не указана';
+                document.getElementById('bonusBalance').textContent = userData.bonusBalance || 0;
+                
+                // Рассчитываем статистику
+                const totalPlastic = userDeposits.reduce((sum, deposit) => sum + parseFloat(deposit.weight || 0), 0);
+                const totalOperations = userDeposits.length;
+                const ecoImpact = Math.round(totalPlastic * 2.5); // Примерный расчет CO₂
+                
+                // Считаем выполненные заказы
+                const orders = JSON.parse(sessionStorage.getItem('orders')) || [];
+                const userOrders = orders.filter(order => order.userId === currentUser.id);
+                const completedOrders = userOrders.filter(order => order.status === 'completed').length;
+                
+                document.getElementById('totalPlastic').textContent = `${totalPlastic.toFixed(1)} кг`;
+                document.getElementById('totalOperations').textContent = totalOperations;
+                document.getElementById('completedOrders').textContent = completedOrders;
+                document.getElementById('ecoImpact').textContent = `${ecoImpact} кг CO₂`;
+                
+                // Загружаем последние операции
+                loadRecentOperations(userDeposits);
+                
+            } catch (error) {
+                console.error('Ошибка при загрузке данных профиля:', error);
+                alert('Ошибка при загрузке данных профиля');
+            }
+        }
+        
+        // Функция для загрузки последних операций
+        function loadRecentOperations(userDeposits) {
+            const operationsList = document.getElementById('operationsList');
+            
+            // Сортируем по дате (самые новые первыми)
+            const sortedDeposits = [...userDeposits].sort((a, b) => {
+                return new Date(b.date || 0) - new Date(a.date || 0);
+            });
+            
+            const recentOperations = sortedDeposits.slice(0, 5); // Первые 5 операций
+            
+            if (recentOperations.length === 0) {
+                operationsList.innerHTML = '<div class="no-data">Операций пока нет</div>';
+                return;
+            }
+            
+            operationsList.innerHTML = recentOperations.map(deposit => `
+                <div class="operation-item">
+                    <div class="operation-icon">♻️</div>
+                    <div class="operation-details">
+                        <div class="operation-type">Сдача пластика</div>
+                        <div class="operation-info">${deposit.weight} кг ${deposit.plasticType || 'пластика'}</div>
+                        <div class="operation-info">
+                            Начислено: <span class="bonus-positive">+${deposit.bonusAmount} баллов</span>
+                        </div>
+                        <div class="operation-date">${deposit.date || 'Дата не указана'}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        
+        // Функция для загрузки заказов пользователя
+        async function loadUserOrders() {
+            const currentUser = API.getCurrentUser();
+            if (!currentUser) return;
+            
+            const orders = JSON.parse(sessionStorage.getItem('orders')) || [];
+            const userOrders = orders.filter(order => order.userId === currentUser.id)
+                .sort((a, b) => b.id - a.id);
+            
+            const ordersList = document.getElementById('ordersList');
+            
+            if (userOrders.length === 0) {
+                ordersList.innerHTML = '<div class="no-data">Заказов пока нет</div>';
+                return;
+            }
+            
+            ordersList.innerHTML = userOrders.map(order => {
+                // Считаем общее количество товаров
+                const totalItems = order.items.reduce((sum, item) => sum + item.quantity, 0);
+                
+                return `
+                <div class="order-card">
+                    <div class="order-header">
+                        <div class="order-number">Заказ ${order.orderNumber}</div>
+                        <div class="order-status ${order.status}">${getStatusText(order.status)}</div>
+                    </div>
+                    <div class="order-details">
+                        <div class="order-info">
+                            <div><strong>Дата:</strong> ${order.createdAt}</div>
+                            <div><strong>Пункт выдачи:</strong> ${Utils.getPickupPointFullName(order.pickupPoint)}</div>
+                            <div><strong>Товаров:</strong> ${totalItems} шт.</div>
+                            <div><strong>Оплачено бонусами:</strong> ${order.bonusUsed} баллов</div>
+                            <div><strong>Итого:</strong> ${Utils.formatPrice(order.finalPrice)}</div>
+                        </div>
+                        <div class="order-items-table">
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th>Товар</th>
+                                        <th>Кол-во</th>
+                                        <th>Цена</th>
+                                        <th>Сумма</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    ${order.items.map(item => `
+                                        <tr>
+                                            <td>${item.name}</td>
+                                            <td>${item.quantity}</td>
+                                            <td>${Utils.formatPrice(item.price)}</td>
+                                            <td>${Utils.formatPrice(item.price * item.quantity)}</td>
+                                        </tr>
+                                    `).join('')}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+                `;
+            }).join('');
+        }
+
+        // Получить текст статуса (оставляем как есть)
+        function getStatusText(status) {
+            const statuses = {
+                'pending': 'Ожидает обработки',
+                'processing': 'В производстве',
+                'ready': 'Готов к выдаче',
+                'completed': 'Выдан'
+            };
+            return statuses[status] || status;
+        }
+
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти?')) {
+                sessionStorage.removeItem("currentUser");
+                window.location.href = 'index.html';
+            }
+        }
+        
+        // Инициализация при загрузке страницы
+        document.addEventListener('DOMContentLoaded', async function() {
+            await loadProfileData();
+            await loadUserOrders();
+        });
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,708 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Сдать пластик - Эко Принт</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/recycle.css">
+    <!-- Яндекс.Карты API -->
+    <script src="https://api-maps.yandex.ru/2.1/?apikey=2dd86e86-d868-42d6-bfe8-58d180dd3d9e
+&lang=ru_RU" type="text/javascript"></script>
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E66PPP1FTP"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E66PPP1FTP');
+</script>
+<body>
+    <!-- Шапка сайта -->
+    <header>
+        <div class="container header-container">
+            <div class="logo">
+                <span class="logo-icon">♻️</span>
+                <span class="logo-text">Эко Принт</span>
+            </div>
+            <nav>
+                <ul>
+                    <li><a href="index.html">Главная</a></li>
+                    <li><a href="catalog.html">Каталог</a></li>
+                    <li><a href="tz.html">ТЗ</a></li>
+                    <li><a href="documents.html">Документы</a></li>
+                    <li><a href="project.html">Проект</a></li>
+                    <li><a href="profile.html">Личный кабинет</a></li>
+                </ul>
+            </nav>
+            <div class="auth-buttons">
+                <a href="login.html" class="btn btn-login">Войти</a>
+                <a href="register.html" class="btn btn-register">Зарегистрироваться</a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Страница сдачи пластика -->
+    <section class="recycle-page">
+        <div class="recycle-container">
+            <div class="recycle-header">
+                <h1>Сдать пластик</h1>
+                <p>Отправьте заявку на сдачу пластиковых отходов. Мы свяжемся с вами для уточнения деталей и сообщим о доступных пунктах приема.</p>
+            </div>
+
+            <div class="recycle-content">
+                <!-- Левая колонка: Форма заявки -->
+                <div class="request-form-section">
+                    <h2 class="form-section-title">Форма заявки</h2>
+                    
+                    <form id="recycleRequestForm">
+                        <div class="form-group">
+                            <label for="userName">Ваше имя *</label>
+                            <input type="text" id="userName" class="form-control" placeholder="Введите ваше имя" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userEmail">Email *</label>
+                            <input type="email" id="userEmail" class="form-control" placeholder="Ваш email" required>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="userPhone">Телефон</label>
+                            <input type="tel" id="userPhone" class="form-control" placeholder="+7 (999) 123-45-67">
+                        </div>
+                        
+                        <div class="form-group">
+                            <label>Тип пластика *</label>
+                            <div class="plastic-type-grid" id="plasticTypeGrid">
+                                <div class="plastic-type-card" data-type="PET">
+                                    <div class="plastic-icon">♳</div>
+                                    <div class="plastic-name">ПЭТ</div>
+                                    <div class="plastic-code">PET / 1</div>
+                                    <div class="plastic-price">15 баллов/кг</div>
+                                </div>
+                                <div class="plastic-type-card" data-type="HDPE">
+                                    <div class="plastic-icon">♴</div>
+                                    <div class="plastic-name">ПНД</div>
+                                    <div class="plastic-code">HDPE / 2</div>
+                                    <div class="plastic-price">12 баллов/кг</div>
+                                </div>
+                                <div class="plastic-type-card" data-type="PVC">
+                                    <div class="plastic-icon">♵</div>
+                                    <div class="plastic-name">ПВХ</div>
+                                    <div class="plastic-code">PVC / 3</div>
+                                    <div class="plastic-price">10 баллов/кг</div>
+                                </div>
+                                <div class="plastic-type-card" data-type="LDPE">
+                                    <div class="plastic-icon">♶</div>
+                                    <div class="plastic-name">ПВД</div>
+                                    <div class="plastic-code">LDPE / 4</div>
+                                    <div class="plastic-price">8 баллов/кг</div>
+                                </div>
+                                <div class="plastic-type-card" data-type="PP">
+                                    <div class="plastic-icon">♷</div>
+                                    <div class="plastic-name">ПП</div>
+                                    <div class="plastic-code">PP / 5</div>
+                                    <div class="plastic-price">14 баллов/кг</div>
+                                </div>
+                                <div class="plastic-type-card" data-type="PS">
+                                    <div class="plastic-icon">♸</div>
+                                    <div class="plastic-name">ПС</div>
+                                    <div class="plastic-code">PS / 6</div>
+                                    <div class="plastic-price">10 баллов/кг</div>
+                                </div>
+                            </div>
+                            <input type="hidden" id="selectedPlasticType" required>
+                        </div>
+                        
+                        <div class="form-group weight-slider">
+                            <div class="slider-header">
+                                <span class="slider-label">Ориентировочный вес</span>
+                                <span class="weight-value" id="weightValue">1 кг</span>
+                            </div>
+                            <input type="range" id="weightSlider" class="weight-slider-input" 
+                                   min="0.1" max="10" value="1" step="0.1">
+                            <div class="weight-markers">
+                                <span>0.1 кг</span>
+                                <span>2.5 кг</span>
+                                <span>5 кг</span>
+                                <span>7.5 кг</span>
+                                <span>10 кг</span>
+                            </div>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="additionalInfo">Дополнительная информация</label>
+                            <textarea id="additionalInfo" class="form-control" 
+                                     rows="4" 
+                                     placeholder="Укажите особенности пластика (цвет, загрязнения), предпочтительное время приема и другую информацию"></textarea>
+                        </div>
+                        
+                        <!-- Калькулятор бонусов -->
+                        <div class="bonus-calculator" id="bonusCalculator">
+                            <h4>Примерный расчет бонусов</h4>
+                            <div class="bonus-amount" id="calculatedBonus">75 баллов</div>
+                            <p class="bonus-note">Точная сумма будет определена при взвешивании на пункте приема</p>
+                        </div>
+                        
+                        <!-- Сообщения -->
+                        <div class="message-box success" id="successMessage">
+                            Заявка успешно отправлена! Мы свяжемся с вами в течение 24 часов.
+                        </div>
+                        
+                        <div class="message-box error" id="errorMessage">
+                            Пожалуйста, заполните все обязательные поля.
+                        </div>
+                        
+                        <button type="submit" class="submit-request-btn">
+                            Отправить заявку на сдачу
+                        </button>
+                    </form>
+                </div>
+                
+                <!-- Правая колонка: Информация -->
+                <div class="info-panel-section">
+                    <div class="info-card">
+                        <h3><i>📍</i> Пункты приема пластика</h3>
+                        <div class="map-container">
+                            <div id="map"></div>
+                        </div>
+                        <div class="map-controls">
+                            <button class="map-btn" onclick="findNearestPoint()">
+                                <i>📍</i> Ближайший к вам
+                            </button>
+                            <button class="map-btn secondary" onclick="showAllPoints()">
+                                <i>🗺️</i> Все пункты
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i>📋</i> Как подготовить пластик</h3>
+                        <ul>
+                            <li>Промойте пластиковые емкости от остатков содержимого</li>
+                            <li>Снимите крышки и этикетки (если возможно)</li>
+                            <li>Сплющите бутылки и банки для экономии места</li>
+                            <li>Разделите пластик по типам (если сдаете разные виды)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i>✅</i> Что принимаем</h3>
+                        <ul>
+                            <li>Пластиковые бутылки (PET)</li>
+                            <li>Упаковку от продуктов (PP, PS)</li>
+                            <li>Канистры и флаконы (HDPE)</li>
+                            <li>Пленку и пакеты (LDPE)</li>
+                            <li>Термоусадочную пленку (PVC)</li>
+                        </ul>
+                    </div>
+                    
+                    <div class="info-card">
+                        <h3><i>📞</i> Контактная информация</h3>
+                        <p><strong>Телефон:</strong> +7 (495) 123-45-67</p>
+                        <p><strong>Email:</strong> plastic@ecoprint.ru</p>
+                        <p><strong>Часы работы:</strong> Пн-Пт 10:00-18:00</p>
+                        <p><strong>Адрес головного офиса:</strong> г. Москва, ул. Миклухо-Маклая, 6</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Инструкция по сдаче -->
+            <div class="instructions">
+                <h2 class="form-section-title">Как происходит сдача пластика</h2>
+                <div class="instruction-steps">
+                    <div class="instruction-step">
+                        <div class="step-number">1</div>
+                        <h4>Заявка</h4>
+                        <p>Заполните форму заявки на этой странице</p>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number">2</div>
+                        <h4>Подтверждение</h4>
+                        <p>Мы свяжемся с вами для уточнения деталей</p>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number">3</div>
+                        <h4>Сдача</h4>
+                        <p>Привезите пластик в указанный пункт приема</p>
+                    </div>
+                    <div class="instruction-step">
+                        <div class="step-number">4</div>
+                        <h4>Бонусы</h4>
+                        <p>Получите бонусные баллы на свой счет</p>
+                    </div>
+                </div>
+            </div>
+            
+            <a href="index.html" class="back-link">← Вернуться на главную страницу</a>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <footer>
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-column">
+                    <h3>Эко Принт</h3>
+                    <p>Автоматизированная система переработки пластика и 3D-печати для вузов и экологических сообществ.</p>
+                </div>
+                <div class="footer-column">
+                    <h3>Навигация</h3>
+                    <ul>
+                        <li><a href="index.html">Главная</a></li>
+                        <li><a href="catalog.html">Каталог</a></li>
+                        <li><a href="tz.html">ТЗ</a></li>
+                        <li><a href="documents.html">Документы</a></li>
+                        <li><a href="project.html">Проект</a></li>
+                        <li><a href="profile.html">Личный кабинет</a></li>
+                    </ul>
+                </div>
+                <div class="footer-column">
+                    <h3>Контакты</h3>
+                    <ul>
+                        <li>Email: info@ecoprint.ru</li>
+                        <li>Телефон: +7 (495) 123-45-67</li>
+                        <li>Адрес: г. Москва, ул. Миклухо-Маклая, 6</li>
+                    </ul>
+                </div>
+            </div>
+            <div class="copyright">
+                <p>&copy; 2025 Эко Принт. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Точки приема пластика
+        const collectionPoints = [
+            {
+                id: 1,
+                name: "Главный пункт приема",
+                address: "ул. Миклухо-Маклая, 6",
+                coordinates: [55.652014, 37.499372],
+                type: "main",
+                phone: "+7 (495) 123-45-67",
+                hours: "Пн-Пт 10:00-18:00",
+                bonuses: "15 баллов/кг"
+            },
+        ];
+
+        // Глобальные переменные для карты
+        let myMap = null;
+        let objectManager = null;
+        let userLocation = null;
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Инициализация карты
+            initMap();
+            
+            // Элементы DOM
+            const plasticCards = document.querySelectorAll('.plastic-type-card');
+            const selectedPlasticType = document.getElementById('selectedPlasticType');
+            const weightSlider = document.getElementById('weightSlider');
+            const weightValue = document.getElementById('weightValue');
+            const calculatedBonus = document.getElementById('calculatedBonus');
+            const form = document.getElementById('recycleRequestForm');
+            const successMessage = document.getElementById('successMessage');
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Цены за килограмм для каждого типа пластика
+            const plasticPrices = {
+                'PET': 15,
+                'HDPE': 12,
+                'PVC': 10,
+                'LDPE': 8,
+                'PP': 14,
+                'PS': 10
+            };
+            
+            // Инициализация
+            let currentPlasticType = 'PET';
+            let currentWeight = 5;
+            
+            // Выделение типа пластика
+            plasticCards.forEach(card => {
+                card.addEventListener('click', function() {
+                    // Убираем выделение со всех карточек
+                    plasticCards.forEach(c => c.classList.remove('selected'));
+                    
+                    // Добавляем выделение на выбранную карточку
+                    this.classList.add('selected');
+                    
+                    // Обновляем выбранный тип
+                    currentPlasticType = this.dataset.type;
+                    selectedPlasticType.value = currentPlasticType;
+                    
+                    // Пересчитываем бонусы
+                    calculateBonus();
+                });
+            });
+            
+            // Выделяем первую карточку по умолчанию
+            plasticCards[0].classList.add('selected');
+            selectedPlasticType.value = 'PET';
+            
+            // Обработка слайдера веса
+            weightSlider.addEventListener('input', function() {
+                currentWeight = parseFloat(this.value);
+                weightValue.textContent = currentWeight + ' кг';
+                calculateBonus();
+            });
+            
+            // Функция расчета бонусов
+            function calculateBonus() {
+                const pricePerKg = plasticPrices[currentPlasticType];
+                const totalBonus = Math.round(pricePerKg * currentWeight);
+                calculatedBonus.textContent = totalBonus + ' баллов';
+            }
+            
+            // Инициализация расчета бонусов
+            calculateBonus();
+            
+            // Обработка отправки формы
+            form.addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                // Скрываем предыдущие сообщения
+                successMessage.style.display = 'none';
+                errorMessage.style.display = 'none';
+                
+                // Проверяем заполнение обязательных полей
+                const userName = document.getElementById('userName').value;
+                const userEmail = document.getElementById('userEmail').value;
+                
+                if (!userName || !userEmail) {
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Получаем данные формы
+                const formData = {
+                    name: userName,
+                    email: userEmail,
+                    phone: document.getElementById('userPhone').value,
+                    plasticType: currentPlasticType,
+                    weight: currentWeight,
+                    estimatedBonus: Math.round(plasticPrices[currentPlasticType] * currentWeight),
+                    additionalInfo: document.getElementById('additionalInfo').value,
+                    date: new Date().toLocaleString('ru-RU')
+                };
+                
+                // Сохраняем заявку в localStorage
+                saveRequest(formData);
+                
+                // Показываем сообщение об успехе
+                successMessage.style.display = 'block';
+                
+                // Прокручиваем к сообщению
+                successMessage.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+                
+                // Сбрасываем форму
+                setTimeout(() => {
+                    form.reset();
+                    plasticCards[0].click(); // Выбираем первый тип пластика
+                    weightSlider.value = 5;
+                    weightValue.textContent = '5 кг';
+                    calculateBonus();
+                    
+                    // Если пользователь авторизован, предзаполняем данные
+                    const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                    if (currentUser) {
+                        document.getElementById('userName').value = currentUser.name || currentUser.fullName || '';
+                        document.getElementById('userEmail').value = currentUser.email || '';
+                    }
+                }, 3000);
+            });
+            
+            // Функция сохранения заявки
+            function saveRequest(requestData) {
+                // Получаем существующие заявки или создаем новый массив
+                let requests = JSON.parse(localStorage.getItem('recycleRequests')) || [];
+                
+                // Добавляем ID и статус к заявке
+                const newRequest = {
+                    id: Date.now(), // Используем timestamp как ID
+                    ...requestData,
+                    status: 'pending', // pending, confirmed, completed, cancelled
+                    createdAt: new Date().toISOString()
+                };
+                
+                // Добавляем новую заявку в начало массива
+                requests.unshift(newRequest);
+                
+                // Сохраняем обратно в localStorage
+                localStorage.setItem('recycleRequests', JSON.stringify(requests));
+                
+                console.log('Заявка сохранена:', newRequest);
+            }
+            
+            // Если пользователь авторизован, предзаполняем форму
+            function prefillForm() {
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                if (currentUser) {
+                    document.getElementById('userName').value = currentUser.name || currentUser.fullName || '';
+                    document.getElementById('userEmail').value = currentUser.email || '';
+                }
+            }
+            
+            // Вызываем предзаполнение
+            prefillForm();
+            
+            // Обновление шапки для авторизованных пользователей
+            function updateHeader() {
+                const authButtons = document.querySelector('.auth-buttons');
+                const currentUser = JSON.parse(localStorage.getItem('currentUser'));
+                
+                if (currentUser) {
+                    authButtons.innerHTML = `
+                        <div style="display: flex; align-items: center;">
+                            <a href="profile.html" class="btn btn-login" style="margin-right: 10px;">Личный кабинет</a>
+                            <a href="#" id="logoutBtn" class="btn btn-register">Выйти</a>
+                        </div>
+                    `;
+                    
+                    // Добавляем обработчик для кнопки выхода
+                    document.getElementById('logoutBtn').addEventListener('click', function(e) {
+                        e.preventDefault();
+                        localStorage.removeItem('currentUser');
+                        window.location.reload();
+                    });
+                }
+            }
+            
+            // Обновляем шапку
+            updateHeader();
+        });
+
+        // Функция инициализации карты
+        function initMap() {
+            ymaps.ready(function() {
+                // Создаем карту с центром в Москве
+                myMap = new ymaps.Map("map", {
+                    center: [55.6512, 37.4873], // Центр Москвы
+                    zoom: 12,
+                    controls: ['zoomControl', 'fullscreenControl']
+                });
+                
+                // Создаем менеджер объектов для эффективной работы с метками
+                objectManager = new ymaps.ObjectManager({
+                    clusterize: true,
+                    gridSize: 64,
+                    clusterDisableClickZoom: true
+                });
+                
+                // Настраиваем внешний вид кластеров
+                objectManager.objects.options.set('preset', 'islands#greenDotIcon');
+                objectManager.clusters.options.set('preset', 'islands#greenClusterIcons');
+                
+                // Добавляем точки на карту
+                const points = collectionPoints.map(point => ({
+                    type: 'Feature',
+                    id: point.id,
+                    geometry: {
+                        type: 'Point',
+                        coordinates: point.coordinates
+                    },
+                    properties: {
+                        balloonContentHeader: `<strong>${point.name}</strong>`,
+                        balloonContentBody: `
+                            <div style="padding: 5px 0;">
+                                <p><strong>Адрес:</strong> ${point.address}</p>
+                                <p><strong>Телефон:</strong> ${point.phone}</p>
+                                <p><strong>Часы работы:</strong> ${point.hours}</p>
+                                <p><strong>Бонусы:</strong> ${point.bonuses}</p>
+                                <p><strong>Тип пункта:</strong> ${getPointTypeName(point.type)}</p>
+                            </div>
+                        `,
+                        clusterCaption: point.name,
+                        hintContent: point.name,
+                        iconContent: getPointIcon(point.type)
+                    }
+                }));
+                
+                // Добавляем все точки в менеджер объектов
+                objectManager.add(points);
+                myMap.geoObjects.add(objectManager);
+                
+                // Обработка клика по метке
+                objectManager.objects.events.add('click', function(e) {
+                    const objectId = e.get('objectId');
+                    const point = collectionPoints.find(p => p.id === objectId);
+                    
+                    if (point) {
+                        // Открываем балун с информацией
+                        myMap.balloon.open(point.coordinates, {
+                            contentHeader: `<strong>${point.name}</strong>`,
+                            contentBody: `
+                                <div style="max-width: 300px;">
+                                    <p><strong>Адрес:</strong> ${point.address}</p>
+                                    <p><strong>Телефон:</strong> ${point.phone}</p>
+                                    <p><strong>Часы работы:</strong> ${point.hours}</p>
+                                    <p><strong>Бонусы:</strong> ${point.bonuses}</p>
+                                    <p><strong>Тип пункта:</strong> ${getPointTypeName(point.type)}</p>
+                                    <div style="margin-top: 10px;">
+                                        <button onclick="buildRoute(${point.coordinates[0]}, ${point.coordinates[1]})" 
+                                                style="background: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+                                            📍 Построить маршрут
+                                        </button>
+                                    </div>
+                                </div>
+                            `,
+                            contentFooter: '<small>Эко Принт - пункт приема пластика</small>'
+                        });
+                    }
+                });
+            });
+        }
+
+        // Функция получения иконки для типа пункта
+        function getPointIcon(type) {
+            switch(type) {
+                case 'main': return '♻️';
+                case 'station': return '🚇';
+                case 'campus': return '🎓';
+                case 'mall': return '🏬';
+                case 'park': return '🌳';
+                default: return '📍';
+            }
+        }
+
+        // Функция получения названия типа пункта
+        function getPointTypeName(type) {
+            switch(type) {
+                case 'main': return 'Главный пункт';
+                case 'station': return 'Станция метро';
+                case 'campus': return 'Кампус вуза';
+                case 'mall': return 'Торговый центр';
+                case 'park': return 'Парк';
+                default: return 'Пункт приема';
+            }
+        }
+
+        // Функция поиска ближайшего пункта
+        function findNearestPoint() {
+            if ("geolocation" in navigator) {
+                navigator.geolocation.getCurrentPosition(
+                    function(position) {
+                        const userCoords = [position.coords.latitude, position.coords.longitude];
+                        userLocation = userCoords;
+                        
+                        // Добавляем метку пользователя
+                        const userPlacemark = new ymaps.Placemark(
+                            userCoords,
+                            {
+                                balloonContent: '<strong>Ваше местоположение</strong>',
+                                iconCaption: 'Вы здесь'
+                            },
+                            {
+                                preset: 'islands#blueCircleDotIcon'
+                            }
+                        );
+                        
+                        myMap.geoObjects.add(userPlacemark);
+                        
+                        // Находим ближайший пункт
+                        let nearestPoint = null;
+                        let minDistance = Infinity;
+                        
+                        collectionPoints.forEach(point => {
+                            const distance = getDistance(userCoords[0], userCoords[1], 
+                                                        point.coordinates[0], point.coordinates[1]);
+                            if (distance < minDistance) {
+                                minDistance = distance;
+                                nearestPoint = point;
+                            }
+                        });
+                        
+                        if (nearestPoint) {
+                            // Перемещаем карту к ближайшему пункту
+                            myMap.setCenter(nearestPoint.coordinates, 14);
+                            
+                            // Открываем балун с информацией
+                            myMap.balloon.open(nearestPoint.coordinates, {
+                                contentHeader: `<strong>${nearestPoint.name}</strong>`,
+                                contentBody: `
+                                    <div style="max-width: 300px;">
+                                        <p><strong>Ближайший к вам пункт</strong></p>
+                                        <p><strong>Расстояние:</strong> ${Math.round(minDistance * 1000)} м</p>
+                                        <p><strong>Адрес:</strong> ${nearestPoint.address}</p>
+                                        <p><strong>Телефон:</strong> ${nearestPoint.phone}</p>
+                                        <p><strong>Часы работы:</strong> ${nearestPoint.hours}</p>
+                                        <div style="margin-top: 10px;">
+                                            <button onclick="buildRoute(${nearestPoint.coordinates[0]}, ${nearestPoint.coordinates[1]})" 
+                                                    style="background: #2e7d32; color: white; border: none; padding: 8px 15px; border-radius: 4px; cursor: pointer;">
+                                                📍 Построить маршрут
+                                            </button>
+                                        </div>
+                                    </div>
+                                `,
+                                contentFooter: '<small>Эко Принт - ближайший пункт приема</small>'
+                            });
+                        }
+                    },
+                    function(error) {
+                        alert("Не удалось определить ваше местоположение. Пожалуйста, разрешите доступ к геолокации.");
+                        console.error("Geolocation error:", error);
+                    },
+                    {
+                        enableHighAccuracy: true,
+                        timeout: 5000,
+                        maximumAge: 0
+                    }
+                );
+            } else {
+                alert("Ваш браузер не поддерживает геолокацию");
+            }
+        }
+
+        // Функция показа всех пунктов
+        function showAllPoints() {
+            // Устанавливаем границы, чтобы вместить все точки
+            const bounds = ymaps.util.bounds.fromPoints(
+                collectionPoints.map(point => point.coordinates)
+            );
+            
+            // Добавляем небольшой отступ
+            bounds[0][0] -= 0.01;
+            bounds[0][1] -= 0.01;
+            bounds[1][0] += 0.01;
+            bounds[1][1] += 0.01;
+            
+            myMap.setBounds(bounds, {
+                checkZoomRange: true,
+                zoomMargin: 50
+            });
+        }
+
+        // Функция построения маршрута
+        function buildRoute(lat, lon) {
+            // Открываем Яндекс.Навигатор с маршрутом
+            const yandexNavUrl = `https://yandex.ru/maps/?rtext=~${lat},${lon}&rtt=auto`;
+            window.open(yandexNavUrl, '_blank');
+            
+            // Альтернатива: открыть в новой вкладке Яндекс.Карты с маршрутом
+            // const yandexMapsUrl = `https://yandex.ru/maps/?pt=${lon},${lat}&z=15&l=map`;
+            // window.open(yandexMapsUrl, '_blank');
+        }
+
+        // Функция расчета расстояния между двумя точками (в км)
+        function getDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Радиус Земли в км
+            const dLat = toRad(lat2 - lat1);
+            const dLon = toRad(lon2 - lon1);
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) * 
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        function toRad(degrees) {
+            return degrees * Math.PI / 180;
+        }
+    </script>
+
+</body>
+</html>
