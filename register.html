@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - Эко Принт</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/register.css">
+</head>
+<body>
+    <!-- Шапка сайта -->
+    <div id="header"></div>
+
+    <!-- Страница регистрации -->
+    <section class="register-page">
+        <div class="register-container">
+            <div class="register-header">
+                <h1>Регистрация</h1>
+                <p>Создайте учетную запись для доступа к системе</p>
+            </div>
+            
+            <form id="registerForm">
+                <div class="form-group">
+                    <label for="fullName">ФИО</label>
+                    <input type="text" id="fullName" class="form-control" placeholder="Ваше полное имя" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="email">Email</label>
+                    <input type="email" id="email" class="form-control" placeholder="Ваш email" required>
+                </div>
+                                
+                <div class="form-group">
+                    <label for="password">Пароль</label>
+                    <input type="password" id="password" class="form-control" placeholder="Придумайте пароль" required minlength="3">
+                </div>
+                
+                <div class="form-group">
+                    <label for="confirmPassword">Подтверждение пароля</label>
+                    <input type="password" id="confirmPassword" class="form-control" placeholder="Повторите пароль" required minlength="3">
+                </div>
+                
+                <button type="submit" class="btn-register-form">Зарегистрироваться</button>
+                
+                <div id="errorMessage" class="error-message">
+                    Ошибка при регистрации
+                </div>
+                
+                <div id="successMessage" class="success-message">
+                    Регистрация прошла успешно! Перенаправление...
+                </div>
+            </form>
+            
+            <div class="register-links">
+                <p>Уже есть аккаунт? <a href="login.html">Войти</a></p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Подвал -->
+    <div id="footer"></div>
+    
+    <script src="js/data.js"></script>
+    <script>
+        // Обработка формы регистрации
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('Страница регистрации загружена');
+            
+            const form = document.getElementById('registerForm');
+            const errorMessage = document.getElementById('errorMessage');
+            const successMessage = document.getElementById('successMessage');
+
+            form.addEventListener('submit', async function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                
+                const fullName = document.getElementById('fullName').value;
+                const email = document.getElementById('email').value;
+                const password = document.getElementById('password').value;
+                const confirmPassword = document.getElementById('confirmPassword').value;
+                
+                // Скрываем сообщения
+                errorMessage.style.display = 'none';
+                successMessage.style.display = 'none';
+                
+                // Простая валидация
+                if (!fullName || !email || !password || !confirmPassword) {
+                    errorMessage.textContent = 'Пожалуйста, заполните все обязательные поля';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                if (password !== confirmPassword) {
+                    errorMessage.textContent = 'Пароли не совпадают';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                if (password.length < 3) {
+                    errorMessage.textContent = 'Пароль должен содержать не менее 3 символов';
+                    errorMessage.style.display = 'block';
+                    return;
+                }
+                
+                // Показываем загрузку
+                const submitBtn = form.querySelector('.btn-register-form');
+                const originalText = submitBtn.textContent;
+                submitBtn.textContent = 'Регистрация...';
+                submitBtn.disabled = true;
+                
+                try {
+                    // Регистрируем пользователя через API
+                    const result = await API.register({
+                        fullName: fullName,
+                        email: email,
+                        password: password
+                    });
+                    
+                    if (result.success) {
+                        // Показываем сообщение об успехе
+                        successMessage.style.display = 'block';
+                        successMessage.textContent = 'Регистрация прошла успешно! Автоматический вход...';
+                        
+                        console.log('Новый пользователь:', result.user);
+                        
+                        // Автоматически входим и перенаправляем
+                        setTimeout(() => {
+                            if (result.user.role === 'operator') {
+                                window.location.href = 'operator.html';
+                            } else {
+                                window.location.href = 'index.html';
+                            }
+                        }, 1500);
+                    } else {
+                        errorMessage.textContent = result.message;
+                        errorMessage.style.display = 'block';
+                    }
+                } catch (error) {
+                    console.error('Ошибка при регистрации:', error);
+                    errorMessage.textContent = 'Ошибка соединения с сервером';
+                    errorMessage.style.display = 'block';
+                } finally {
+                    submitBtn.textContent = originalText;
+                    submitBtn.disabled = false;
+                }
+            });
+        });
+    </script>
+</body>
+</html>
