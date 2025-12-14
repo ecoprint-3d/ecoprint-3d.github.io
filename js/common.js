@@ -9,7 +9,6 @@ document.addEventListener("DOMContentLoaded", function () {
     // Добавить отслеживание событий корзины
     window.addEventListener('cartUpdated', function() {
         if (window.EcoAnalytics) {
-            // Уже отслеживается в analytics.js
         }
     });
 
@@ -89,16 +88,6 @@ document.addEventListener("DOMContentLoaded", function () {
                 updateCartUI(); // обновляем содержимое при открытии
             }
         });
-
-        if (currentUser && currentUser.role === 'operator') {
-            // Добавляем ссылку на аналитику в навигацию
-            const nav = document.querySelector('nav ul');
-            if (nav) {
-                const analyticsLink = document.createElement('li');
-                analyticsLink.innerHTML = '<a href="analytics.html">Аналитика</a>';
-                nav.appendChild(analyticsLink);
-            }
-        }
     }
 
     // === Обновление счётчика в шапке ===
@@ -169,7 +158,7 @@ document.addEventListener("DOMContentLoaded", function () {
         // Обновляем счетчик в header
         updateCartCount();
         
-        // ПЕРЕДЕЛАННОЕ: переинициализируем header, чтобы обновить иконку корзины
+        // переинициализируем header, чтобы обновить иконку корзины
         if (typeof initHeader === 'function') {
             initHeader();
         }
