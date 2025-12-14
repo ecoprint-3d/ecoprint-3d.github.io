@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -178,4 +179,194 @@
     <script src="js/checkout.js"></script>
     <script src="js/utils.js"></script>
 </body>
+=======
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Оформление заказа - Эко Принт</title>
+    <link rel="stylesheet" href="css/styles.css">
+    <link rel="stylesheet" href="css/checkout.css">
+</head>
+<!-- Google tag (gtag.js) -->
+<script async src="https://www.googletagmanager.com/gtag/js?id=G-E66PPP1FTP"></script>
+<script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-E66PPP1FTP');
+</script>
+<body>
+    <!-- Шапка сайта -->
+    <div id="header"></div>
+
+    <!-- Страница оформления заказа -->
+    <section class="checkout-page">
+        <div class="container">
+            <h1 class="page-title">Оформление заказа</h1>
+            
+            <div class="checkout-container">
+                <!-- Левая колонка: форма заказа -->
+                <div class="checkout-form">
+                    <h2>Данные для заказа</h2>
+                    
+                    <!-- Контактная информация -->
+                    <div class="form-section">
+                        <h3>Контактная информация</h3>
+                        <div class="form-group">
+                            <label for="fullName">ФИО *</label>
+                            <input type="text" id="fullName" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="phone">Телефон *</label>
+                            <input type="tel" id="phone" class="form-control" required>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email *</label>
+                            <input type="email" id="email" class="form-control" required>
+                        </div>
+                    </div>
+
+                    <!-- Пункт выдачи -->
+                    <div class="form-section">
+                        <h3>Пункт выдачи</h3>
+                        <div class="form-group">
+                            <label for="pickupPoint">Выберите пункт выдачи *</label>
+                            <select id="pickupPoint" class="form-control" required>
+                                <option value="">Выберите пункт...</option>
+                                <option value="main">Главный корпус</option>
+                                <option value="science">Научный корпус (пр. Мира, 15)</option>
+                            </select>
+                            <small class="form-text">Изделия изготавливаются 3-7 дней. Вы получите уведомление о готовности.</small>
+                        </div>
+                    </div>
+
+                    <!-- Способ оплаты -->
+                    <div class="form-section">
+                        <h3>Способ оплаты</h3>
+                        <div class="payment-methods">
+                            <div class="payment-method">
+                                <input type="radio" id="paymentBonus" name="paymentMethod" value="bonus" checked>
+                                <label for="paymentBonus">
+                                    <span class="payment-title">Бонусными баллами</span>
+                                    <span class="payment-desc">Оплата до 90% от суммы заказа</span>
+                                </label>
+                            </div>
+                            <div class="payment-method">
+                                <input type="radio" id="paymentCard" name="paymentMethod" value="card">
+                                <label for="paymentCard">
+                                    <span class="payment-title">Банковской картой</span>
+                                    <span class="payment-desc">Оплата онлайн</span>
+                                </label>
+                            </div>
+                            <div class="payment-method">
+                                <input type="radio" id="paymentCash" name="paymentMethod" value="cash">
+                                <label for="paymentCash">
+                                    <span class="payment-title">Наличными</span>
+                                    <span class="payment-desc">Оплата при получении</span>
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Комментарий -->
+                    <div class="form-section">
+                        <h3>Комментарий к заказу</h3>
+                        <div class="form-group">
+                            <textarea id="comment" class="form-control" rows="3" placeholder="Особые пожелания, цвет изделия и т.д."></textarea>
+                        </div>
+                    </div>
+
+                    <div class="form-check">
+                        <input type="checkbox" id="agreeTerms" required>
+                        <label for="agreeTerms">Я согласен с условиями обработки персональных данных</label>
+                    </div>
+                </div>
+
+                <!-- Правая колонка: итоги заказа -->
+                <div class="order-summary">
+                    <h2>Ваш заказ</h2>
+                    
+                    <!-- Список товаров -->
+                    <div class="order-items" id="orderItems">
+                        <!-- Товары будут загружены через JS -->
+                    </div>
+
+                    <!-- Итоговая стоимость -->
+                    <div class="order-total">
+                        <div class="total-row">
+                            <span>Товары:</span>
+                            <span id="subtotalPrice">0 ₽</span>
+                        </div>
+                        <div class="total-row">
+                            <span>Доставка:</span>
+                            <span>Бесплатно</span>
+                        </div>
+                        
+                        <!-- Использование бонусов -->
+                        <div class="bonus-section">
+                            <div class="bonus-info">
+                                <span>Ваши бонусы:</span>
+                                <span id="userBonusBalance">0 баллов</span>
+                            </div>
+                            <div class="bonus-control">
+                                <label for="bonusAmount">Использовать бонусов:</label>
+                                <div class="bonus-input-group">
+                                    <input type="number" id="bonusAmount" min="0" max="0" value="0" class="form-control">
+                                    <span class="bonus-max" onclick="useMaxBonus()">Max (90%)</span>
+                                </div>
+                                <small class="form-text">Можно оплатить до 90% суммы заказа</small>
+                            </div>
+                            <div class="total-row bonus-row">
+                                <span>Списано бонусов:</span>
+                                <span id="usedBonus">0 (0 ₽)</span>
+                            </div>
+                        </div>
+
+                        <!-- Итог к оплате -->
+                        <div class="total-row final-total">
+                            <span>Итого к оплате:</span>
+                            <span id="finalPrice">0 ₽</span>
+                        </div>
+
+                        <div class="bonus-exchange">
+                            1 балл = 1 ₽
+                        </div>
+                    </div>
+
+                    <!-- Кнопка оформления -->
+                    <button class="btn-submit-order" id="submitOrder">Оформить заказ</button>
+                    <a href="catalog.html" class="back-to-cart">← Вернуться к покупкам</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Модальное окно успеха -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">✅</div>
+            <h2>Заказ успешно оформлен!</h2>
+            <p>Ваш заказ <strong id="orderNumber">#0000</strong> принят в обработку.</p>
+            <p>Мы пришлем уведомление на email, когда заказ будет готов к выдаче.</p>
+            <div class="modal-info">
+                <p><strong>Пункт выдачи:</strong> <span id="modalPickupPoint">-</span></p>
+                <p><strong>Оплачено бонусами:</strong> <span id="modalBonusUsed">0 баллов</span></p>
+                <p><strong>К оплате:</strong> <span id="modalFinalPrice">0 ₽</span></p>
+            </div>
+            <div class="modal-actions">
+                <button class="btn-modal" onclick="closeModal()">Продолжить покупки</button>
+                <a href="profile.html" class="btn-modal secondary">Перейти в профиль</a>
+            </div>
+        </div>
+    </div>
+
+    <!-- Подвал -->
+    <div id="footer"></div>
+    <script src="js/common.js"></script>
+    <script src="js/checkout.js"></script>
+    <script src="js/utils.js"></script>
+</body>
+>>>>>>> master
 </html>
